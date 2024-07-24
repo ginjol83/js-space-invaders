@@ -5,9 +5,8 @@ let spaceship;
 let bullets = [];
 let aliens = [];
 let keys = {};
+let score = 0;
 
-let backgroundImg = new Image();
-backgroundImg.src = 'backgrounds/space.png'; 
 
 document.addEventListener('keydown', (e) => keys[e.key] = true);
 document.addEventListener('keyup', (e) => keys[e.key] = false);
@@ -15,6 +14,7 @@ document.addEventListener('keyup', (e) => keys[e.key] = false);
 function gameLoop() {
     update();
     draw();
+    drawScore();
     handleSpaceshipAlienCollision(); 
     requestAnimationFrame(gameLoop);
 }
@@ -27,11 +27,9 @@ function update() {
 }
 
 function draw() {
-    // Cambiar el fondo a negro
     ctx.fillStyle = 'black';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
-    // Dibuja el resto de los elementos del juego aquí
     spaceship.draw();
     bullets.forEach(bullet => bullet.draw());
     aliens.forEach(alien => alien.draw());
@@ -43,6 +41,7 @@ function handleCollisions() {
         aliens = aliens.filter(alien => {
             if (bullet.hits(alien)) {
                 hit = true;
+                score++;
                 return false;
             }
             return true;
@@ -61,13 +60,18 @@ function checkCollision(obj1, obj2) {
 function handleSpaceshipAlienCollision() {
     aliens.forEach((alien, index) => {
         if (checkCollision(spaceship, alien)) {
-            // Aquí puedes manejar lo que sucede cuando hay una colisión
             console.log("Colisión detectada entre la nave y el alienígena");
-            // Por ejemplo, eliminar el alienígena y terminar el juego o restar vida
-            aliens.splice(index, 1); // Elimina el alienígena con el que colisionó
-            // gameOver(); // Suponiendo que tienes una función para manejar el fin del juego
+            
+            aliens.splice(index, 1); 
+            // gameOver(); 
         }
     });
+}
+
+function drawScore() {
+    ctx.font = '16px Arial';
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText('Score: ' + score, 8, 20);
 }
 
 function init() {
